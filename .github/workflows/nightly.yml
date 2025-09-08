@@ -34,6 +34,8 @@ jobs:
     if: ${{ needs.check_sha.outputs.should_run != 'false' }}
     runs-on: ubuntu-24.04-arm
     steps:
+    - name: test
+      run: "echo {{ needs.check_sha.outputs.sha }}"
     - name: Clone Overwitch
       uses: actions/checkout@v3
       with:
