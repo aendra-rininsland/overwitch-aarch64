@@ -22,17 +22,17 @@ jobs:
           repository: dagargo/overwitch
       - id: get_sha
         name: get latest_commit
-        run: echo "::set-output name=sha::$(git rev-parse HEAD)"
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - id: should_run
         continue-on-error: true
         name: check latest commit is less than a day
         if: ${{ github.event_name == 'schedule' }}
-        run: test -z $(git rev-list  --after="24 hours" ${{ steps.get_sha.outputs.sha }} && echo "::set-output name=should_run::false"
+        run: test -z $(git rev-list  --after="24 hours" ${{ steps.get_sha.outputs.sha }} && echo "{should_run}=false"  >> "$GITHUB_OUTPUT"
 
   release-nightly:
     needs: check_sha
     if: ${{ needs.check_sha.outputs.should_run != 'false' }}
-    runs-on: ubuntu-22.04-arm
+    runs-on: ubuntu-24.04-arm
     steps:
     - name: Clone Overwitch
       uses: actions/checkout@v3
