@@ -65,8 +65,8 @@ jobs:
     - name: create tag
       id: create_tag
       run: |
-        git tag ${{ needs.check_sha.outputs.sha }}
-        git push origin ${{ needs.check_sha.outputs.sha }}
+        git tag ${{ needs.check_sha.outputs.sha }} -f
+        git push origin ${{ needs.check_sha.outputs.sha }} -f
     - name: get today date
       run: echo "datestamp=$(date +'%Y-%m-%d')" >> "$GITHUB_ENV"
     - name: create nightly release
