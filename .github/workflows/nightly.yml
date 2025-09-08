@@ -34,26 +34,33 @@ jobs:
     if: ${{ needs.check_sha.outputs.should_run != 'false' }}
     runs-on: ubuntu-24.04-arm
     steps:
-    - name: "what"
-      run: "echo ${{ needs.check_sha.outputs.sha }}"
+    - name: Checkout
+      uses: actions/checkout@v5
     - name: Clone Overwitch
       uses: actions/checkout@v3
       with:
         repository: dagargo/overwitch
+        path: overwitch
     - name: install dependencies
+      working-directory: ./overwitch
       run: |
           sudo apt-get update
           sudo apt-get -y --no-install-recommends install automake libtool libusb-1.0-0-dev libjack-jackd2-dev libsamplerate0-dev libsndfile1-dev autopoint gettext libjson-glib-dev libgtk-4-dev libsystemd-dev
           sudo apt-get -y --no-install-recommends install libcunit1-dev
     - name: autoreconf
+      working-directory: ./overwitch
       run: autoreconf --install
     - name: configure
+      working-directory: ./overwitch
       run: ./configure
     - name: make
+      working-directory: ./overwitch
       run: make
     - name: make check
+      working-directory: ./overwitch
       run: make check
     - name: make distcheck
+      working-directory: ./overwitch
       run: make clean distcheck
     - name: create tag
       id: create_tag
@@ -63,6 +70,6 @@ jobs:
     - name: create nightly release
       uses: softprops/action-gh-release@v2
       with:
-        files: overwitch-*.tar.gz
+        files: ./overwitch/overwitch-*.tar.gz
         name: "$(date +'%Y-%m-%d')-${{ needs.check_sha.outputs.sha }}"
         tag_name: "${{ needs.check_sha.outputs.sha }}"
