@@ -53,9 +53,14 @@ jobs:
       run: make check
     - name: make distcheck
       run: make clean distcheck
-    - name: Create GitHub Release
+    - name: create tag
+      id: create_tag
+      run: |
+        git tag {{ needs.check_sha.outputs.sha }}
+        git push origin {{ needs.check_sha.outputs.sha }}
+    - name: create nightly release
       uses: softprops/action-gh-release@v2
       with:
-        files: overwitch-2.1.1.tar.gz
+        files: overwitch-*.tar.gz
         name: "$(date +'%Y-%m-%d')-{{ needs.check_sha.outputs.sha }}"
         tag_name: "{{ needs.check_sha.outputs.sha }}"
