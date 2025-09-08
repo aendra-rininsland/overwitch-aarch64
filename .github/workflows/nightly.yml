@@ -67,11 +67,12 @@ jobs:
       run: |
         git tag ${{ needs.check_sha.outputs.sha }} -f
         git push origin ${{ needs.check_sha.outputs.sha }} -f
-    - name: get today date
-      run: echo "datestamp=$(date +'%Y-%m-%d')" >> "$GITHUB_ENV"
+    - name: generate release name
+      id: release_name
+      run: echo "release_name=$(date +'%Y-%m-%d')-${{ needs.check_sha.outputs.sha }}" >> "$GITHUB_OUTPUT"
     - name: create nightly release
       uses: softprops/action-gh-release@v2
       with:
         files: ./overwitch/overwitch-*.tar.gz
-        name: "$datestamp-${{ needs.check_sha.outputs.sha }}"
+        name: "${{ steps.release_name.outputs.release_name }}"
         tag_name: "${{ needs.check_sha.outputs.sha }}"
