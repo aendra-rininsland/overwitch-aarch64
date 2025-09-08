@@ -34,8 +34,8 @@ jobs:
     if: ${{ needs.check_sha.outputs.should_run != 'false' }}
     runs-on: ubuntu-24.04-arm
     steps:
-    - name: test
-      run: "echo {{ needs.check_sha.outputs.sha }}"
+    - name: "what"
+      run: "echo ${{ needs.check_sha.outputs.sha }}"
     - name: Clone Overwitch
       uses: actions/checkout@v3
       with:
@@ -58,11 +58,11 @@ jobs:
     - name: create tag
       id: create_tag
       run: |
-        git tag {{ needs.check_sha.outputs.sha }}
-        git push origin {{ needs.check_sha.outputs.sha }}
+        git tag ${{ needs.check_sha.outputs.sha }}
+        git push origin ${{ needs.check_sha.outputs.sha }}
     - name: create nightly release
       uses: softprops/action-gh-release@v2
       with:
         files: overwitch-*.tar.gz
-        name: "$(date +'%Y-%m-%d')-{{ needs.check_sha.outputs.sha }}"
-        tag_name: "{{ needs.check_sha.outputs.sha }}"
+        name: "$(date +'%Y-%m-%d')-${{ needs.check_sha.outputs.sha }}"
+        tag_name: "${{ needs.check_sha.outputs.sha }}"
